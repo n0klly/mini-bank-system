@@ -15,6 +15,7 @@ import ru.noklly.minibanksystemcore.entity.User;
 import ru.noklly.minibanksystemcore.entity.UserRole;
 import ru.noklly.minibanksystemcore.repository.UserRepository;
 import ru.noklly.minibanksystemcore.security.CustomUserDetails;
+import ru.noklly.minibanksystemcore.security.token.JwtService;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +23,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-    //ToDo: responses
+    private final JwtService jwtService;
+
     public RegisterResponse register(RegisterRequest request){
         if(userRepository.existsByEmail(request.getEmail())){
             throw new  RuntimeException("User is already exist!");
@@ -39,6 +41,9 @@ public class UserService {
         Authentication authResult = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         CustomUserDetails userDetails = (CustomUserDetails) authResult.getPrincipal();
-        return new LoginResponse(userDetails.getUser().getName());
+        User user = userDetails.getUser();
+        String jwtToken = jwtService.generateToken(user.getEmail());
+
+        return new LoginResponse(user.getName(), jwtToken);
     }
 }
