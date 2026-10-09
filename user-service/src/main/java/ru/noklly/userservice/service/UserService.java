@@ -1,6 +1,8 @@
 package ru.noklly.userservice.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -12,6 +14,7 @@ import ru.noklly.userservice.controller.public_api.dto.RegisterRequest;
 import ru.noklly.userservice.controller.public_api.dto.RegisterResponse;
 import ru.noklly.userservice.entity.User;
 import ru.noklly.userservice.entity.UserRole;
+import ru.noklly.userservice.event.UserCreatedEvent;
 import ru.noklly.userservice.repository.UserRepository;
 import ru.noklly.userservice.security.CustomUserDetails;
 import ru.noklly.userservice.security.token.JwtService;
@@ -23,17 +26,21 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
+    @Transactional
     public RegisterResponse register(RegisterRequest request){
         if(userRepository.existsByEmail(request.getEmail())){
             throw new  RuntimeException("User is already exist!");
         }
-        return new RegisterResponse(userRepository.save(
+        User user = userRepository.save(
                 new User(request.getEmail(),
                         request.getName(),
                         passwordEncoder.encode(request.getPassword()),
                         UserRole.USER
-                )).getName());
+                ));
+        kafkaTemplate.send("user-created", new UserCreatedEvent(user.getId()));
+        return new RegisterResponse(user.getName());
     }
 
     public LoginResponse login(LoginRequest request){
