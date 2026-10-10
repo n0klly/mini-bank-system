@@ -19,8 +19,8 @@ services:
     container_name: bank-account-db
     environment:
       POSTGRES_DB: account_db
-      POSTGRES_USER: bank_user
-      POSTGRES_PASSWORD: bank_user_krut1234
+      POSTGRES_USER: account_user
+      POSTGRES_PASSWORD: bank_account_krut1234
     ports:
       - "5432:5432"
     volumes:
