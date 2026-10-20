@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-import ru.noklly.accountservice.entity.AccountEntity;
+import ru.noklly.accountservice.entity.Account;
 import ru.noklly.accountservice.entity.AccountStatus;
 import ru.noklly.accountservice.kafka.event.UserCreatedEvent;
 import ru.noklly.accountservice.service.AccountService;
@@ -22,7 +22,7 @@ public class UserCreatedListener {
     public void handleUserCreated(UserCreatedEvent event) {
         log.info("Received event for userId: {}", event.userId());
         String accountNumber = "ACCNUMB" + UUID.randomUUID().toString().replaceAll("[^0-9]", "").substring(0, 12);
-        AccountEntity account = new AccountEntity(
+        Account account = new Account(
                 AccountStatus.ACTIVE,
                 "RUB",
                 BigDecimal.ZERO,

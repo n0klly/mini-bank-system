@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table(name = "accounts")
-public class AccountEntity {
+public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,7 +33,7 @@ public class AccountEntity {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    public AccountEntity(AccountStatus status, String currency, BigDecimal balance, String accountNumber, Long userID) {
+    public Account(AccountStatus status, String currency, BigDecimal balance, String accountNumber, Long userID) {
         this.status = status;
         this.currency = currency;
         this.balance = balance;
