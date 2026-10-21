@@ -13,7 +13,7 @@ import ru.noklly.userservice.security.CustomUserDetails;
 @RequestMapping("/users")
 public class UserController {
 
-    @GetMapping("me")
+    @GetMapping("/me")
     public UserProfileResponse getCurrentUser(@AuthenticationPrincipal CustomUserDetails userDetails){
         User user = userDetails.getUser();
         return new UserProfileResponse(
