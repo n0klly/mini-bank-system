@@ -19,9 +19,10 @@ import java.util.List;
 public class AccountService {
     private final AccountRepository accountRepository;
     @Transactional
-    public TransferResponse transfer(TransferRequest transferRequest){
+    public TransferResponse transfer(TransferRequest transferRequest, Long userId){
         if(transferRequest.senderAccountId().compareTo(transferRequest.receiverAccountId())==0) throw new RuntimeException("incorrect receiver");
         Account sender = getActiveAccount(transferRequest.senderAccountId());
+        if(sender.getUserID().compareTo(userId)!=0)throw new RuntimeException("jwt eror");
         Account receiver = getActiveAccount(transferRequest.receiverAccountId());
         if(!sender.getCurrency().equals(receiver.getCurrency())) throw new RuntimeException("receiver has different currency");
         if(sender.getBalance().compareTo(transferRequest.amount())<0) throw new RuntimeException("incorrect amount");

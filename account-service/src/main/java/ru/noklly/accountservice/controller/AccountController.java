@@ -1,6 +1,10 @@
 package ru.noklly.accountservice.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.noklly.accountservice.controller.dto.AccountResponse;
 import ru.noklly.accountservice.controller.dto.TransferRequest;
@@ -17,13 +21,13 @@ public class AccountController {
     private final AccountService accountService;
 
     @GetMapping
-    public List<AccountResponse> getAllUserAccounts(@RequestParam Long userId){
+    public List<AccountResponse> getAllUserAccounts(@NotNull @Positive @RequestParam Long userId){
         return accountService.getAllUserAccounts(userId);
     }
 
     @PostMapping("/transfer")
-    public TransferResponse transfer(@RequestBody TransferRequest transferRequest){
-        return accountService.transfer(transferRequest);
+    public TransferResponse transfer(@Valid @RequestBody TransferRequest transferRequest, @AuthenticationPrincipal Long userId){
+        return accountService.transfer(transferRequest, userId);
     }
 
 }

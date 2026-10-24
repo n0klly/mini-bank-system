@@ -48,7 +48,7 @@ public class UserService {
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         CustomUserDetails userDetails = (CustomUserDetails) authResult.getPrincipal();
         User user = userDetails.getUser();
-        String jwtToken = jwtService.generateToken(user.getEmail());
+        String jwtToken = jwtService.generateToken(user.getEmail(), user.getId());
 
         return new LoginResponse(user.getName(), jwtToken);
     }
