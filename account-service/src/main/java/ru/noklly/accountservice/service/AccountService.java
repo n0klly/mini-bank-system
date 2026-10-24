@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.noklly.accountservice.controller.dto.AccountResponse;
-import ru.noklly.accountservice.controller.dto.BalanceResponse;
 import ru.noklly.accountservice.controller.dto.TransferRequest;
 import ru.noklly.accountservice.controller.dto.TransferResponse;
 import ru.noklly.accountservice.entity.Account;
@@ -19,14 +18,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AccountService {
     private final AccountRepository accountRepository;
-    //todo: rewrite transfer
     @Transactional
     public TransferResponse transfer(TransferRequest transferRequest){
-        BigDecimal newBalance = withdraw(transferRequest.senderAccountId(), transferRequest.amount()).balance();
-        deposit(transferRequest.receiverAccountId(),transferRequest.amount());
-        return new TransferResponse(newBalance);
+        if(transferRequest.senderAccountId().compareTo(transferRequest.receiverAccountId())==0) throw new RuntimeException("incorrect receiver");
+        Account sender = getActiveAccount(transferRequest.senderAccountId());
+        Account receiver = getActiveAccount(transferRequest.receiverAccountId());
+        if(!sender.getCurrency().equals(receiver.getCurrency())) throw new RuntimeException("receiver has different currency");
+        if(sender.getBalance().compareTo(transferRequest.amount())<0) throw new RuntimeException("incorrect amount");
+        BigDecimal newBalance = withdraw(sender, transferRequest.amount());
+        String last4 = deposit(receiver, transferRequest.amount());
+        return new TransferResponse(newBalance, last4);
     }
-
+    private Account getActiveAccount(Long accountId){
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("account does not exist"));
+        if(account.getStatus()!=AccountStatus.ACTIVE) throw new RuntimeException("account is not active");
+        return account;
+    }
     public void save(Account account){
         accountRepository.save(account);
 
@@ -44,21 +51,17 @@ public class AccountService {
         }
         return accountResponses;
     }
+
     @Transactional
-    public BalanceResponse deposit(Long accountId, BigDecimal amount){
-        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("account does not exist"));
-        if(account.getStatus()!=AccountStatus.ACTIVE) throw new RuntimeException("account is not active");
+    protected String deposit(Account account, BigDecimal amount)/*add custom exception*/{
         account.setBalance(account.getBalance().add(amount));
         accountRepository.save(account);
-        return new BalanceResponse(account.getBalance());
+        return "****"+account.getAccountNumber().substring(account.getAccountNumber().length()-4);
     }
     @Transactional
-    public BalanceResponse withdraw(Long accountId, BigDecimal amount){
-        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("account does not exist"));
-        if(account.getStatus()!=AccountStatus.ACTIVE) throw new RuntimeException("account is not active");
-        if(amount.compareTo(account.getBalance())>0)throw new RuntimeException("incorrect amount");
+    protected BigDecimal withdraw(Account account, BigDecimal amount)/*add custom exception*/{
         account.setBalance(account.getBalance().subtract(amount));
         accountRepository.save(account);
-        return new BalanceResponse(account.getBalance());
+        return account.getBalance();
     }
 }

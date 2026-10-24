@@ -9,6 +9,9 @@ import java.math.BigDecimal;
 public record TransferResponse(
         @NotNull
         @PositiveOrZero
-        BigDecimal balance
+        BigDecimal balance,
+        @NotNull
+        String maskedAccountNumber
+
 ) {
 }
