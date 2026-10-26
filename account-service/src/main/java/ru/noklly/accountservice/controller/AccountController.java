@@ -13,6 +13,7 @@ import ru.noklly.accountservice.service.AccountService;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/accounts")

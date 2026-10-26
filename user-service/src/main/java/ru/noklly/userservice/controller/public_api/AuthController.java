@@ -2,6 +2,7 @@ package ru.noklly.userservice.controller.public_api;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,7 +11,7 @@ import ru.noklly.userservice.controller.public_api.dto.LoginResponse;
 import ru.noklly.userservice.controller.public_api.dto.RegisterRequest;
 import ru.noklly.userservice.controller.public_api.dto.RegisterResponse;
 import ru.noklly.userservice.service.UserService;
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequiredArgsConstructor
 public class AuthController {

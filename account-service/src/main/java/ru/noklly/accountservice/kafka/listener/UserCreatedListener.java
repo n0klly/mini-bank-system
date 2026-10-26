@@ -25,7 +25,8 @@ public class UserCreatedListener {
         Account account = new Account(
                 AccountStatus.ACTIVE,
                 "RUB",
-                BigDecimal.ZERO,
+                //BigDecimal.ZERO,
+                BigDecimal.valueOf(1000),
                 accountNumber,
                 event.userId()
         );
