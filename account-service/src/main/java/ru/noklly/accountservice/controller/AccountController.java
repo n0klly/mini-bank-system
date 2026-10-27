@@ -10,7 +10,6 @@ import ru.noklly.accountservice.controller.dto.AccountResponse;
 import ru.noklly.accountservice.controller.dto.TransferRequest;
 import ru.noklly.accountservice.controller.dto.TransferResponse;
 import ru.noklly.accountservice.service.AccountService;
-
 import java.util.List;
 
 @CrossOrigin(origins = "*")
@@ -22,7 +21,7 @@ public class AccountController {
     private final AccountService accountService;
 
     @GetMapping
-    public List<AccountResponse> getAllUserAccounts(@NotNull @Positive @RequestParam Long userId){
+    public List<AccountResponse> getAllUserAccounts(@NotNull @Positive @AuthenticationPrincipal Long userId){
         return accountService.getAllUserAccounts(userId);
     }
 
