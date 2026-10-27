@@ -15,6 +15,7 @@ import ru.noklly.userservice.controller.public_api.dto.RegisterResponse;
 import ru.noklly.userservice.entity.User;
 import ru.noklly.userservice.entity.UserRole;
 import ru.noklly.userservice.event.UserCreatedEvent;
+import ru.noklly.userservice.exception.UserAlreadyExistsException;
 import ru.noklly.userservice.repository.UserRepository;
 import ru.noklly.userservice.security.CustomUserDetails;
 import ru.noklly.userservice.security.token.JwtService;
@@ -31,7 +32,7 @@ public class UserService {
     @Transactional
     public RegisterResponse register(RegisterRequest request){
         if(userRepository.existsByEmail(request.getEmail())){
-            throw new  RuntimeException("User is already exist!");
+            throw new UserAlreadyExistsException("User with email " + request.getEmail() + " already exists");
         }
         User user = userRepository.save(
                 new User(request.getEmail(),

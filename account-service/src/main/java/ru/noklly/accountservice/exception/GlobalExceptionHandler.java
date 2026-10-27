@@ -8,37 +8,37 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(AccountNotFoundException.class)
-    @ResponseStatus
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ExceptionResponse accountNotFoundException(AccountNotFoundException exception){
         return new ExceptionResponse(HttpStatus.NOT_FOUND,exception.getMessage());
     }
     @ExceptionHandler(NotEnoughBalanceException.class)
-    @ResponseStatus
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse notEnoughBalanceException(NotEnoughBalanceException exception){
         return new ExceptionResponse(HttpStatus.BAD_REQUEST,exception.getMessage());
     }
     @ExceptionHandler(SelfTransferException.class)
-    @ResponseStatus
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse selfTransferException(SelfTransferException exception){
         return new ExceptionResponse(HttpStatus.BAD_REQUEST,exception.getMessage());
     }
     @ExceptionHandler(CurrencyMismatchException.class)
-    @ResponseStatus
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse currencyMismatchException(CurrencyMismatchException exception){
         return new ExceptionResponse(HttpStatus.BAD_REQUEST,exception.getMessage());
     }
     @ExceptionHandler(AccountInactiveException.class)
-    @ResponseStatus
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public ExceptionResponse accountInactiveException(AccountInactiveException exception){
         return new ExceptionResponse(HttpStatus.FORBIDDEN,exception.getMessage());
     }
     @ExceptionHandler(AccountAccessDeniedException.class)
-    @ResponseStatus
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public ExceptionResponse accountAccessDeniedException(AccountAccessDeniedException exception){
         return new ExceptionResponse(HttpStatus.FORBIDDEN,exception.getMessage());
     }
     @ExceptionHandler(InvalidTransferAmountException.class)
-    @ResponseStatus
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse invalidTransferAmountException(InvalidTransferAmountException exception){
         return new ExceptionResponse(HttpStatus.BAD_REQUEST,exception.getMessage());
     }
